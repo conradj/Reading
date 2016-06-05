@@ -1,0 +1,28 @@
+{
+  "name": "reading",
+  "version": "1.0.0",
+  "description": "Daily and Weekly articles roundup from your read articles in getpocket",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conradj/Reading.git"
+  },
+  "keywords": [
+    "reading",
+    "list",
+    "getpocket"
+  ],
+  "author": "Conrad Jackson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/conradj/Reading/issues"
+  },
+  "homepage": "https://github.com/conradj/Reading#readme",
+  "dependencies": {
+    "dotenv-safe": "^2.3.1",
+    "node-getpocket": "^1.0.0"
+  }
+}
