@@ -1,0 +1,24 @@
+{
+  "name": "reading",
+  "version": "1.0.0",
+  "description": "Your daily and weekly roundup of read articles",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conradj/Reading.git"
+  },
+  "author": "Conrad Jackson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/conradj/Reading/issues"
+  },
+  "homepage": "https://github.com/conradj/Reading#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "uid-safe": "^2.1.1"
+  }
+}
