@@ -1,21 +1,31 @@
 {
   "name": "reading",
   "version": "1.0.0",
+<<<<<<< HEAD
   "description": "Daily and Weekly articles roundup from your read articles in getpocket",
   "main": "index.js",
   "scripts": {
     "open:dev": "nodemon . localhost 5000",
     "start": "npm run open:dev"
+=======
+  "description": "Your daily and weekly roundup of read articles",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+>>>>>>> origin/sessions
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/conradj/Reading.git"
   },
+<<<<<<< HEAD
   "keywords": [
     "reading",
     "list",
     "getpocket"
   ],
+=======
+>>>>>>> origin/sessions
   "author": "Conrad Jackson",
   "license": "ISC",
   "bugs": {
@@ -23,10 +33,16 @@
   },
   "homepage": "https://github.com/conradj/Reading#readme",
   "dependencies": {
+<<<<<<< HEAD
     "dotenv-safe": "^2.3.1",
     "node-getpocket": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.9.2"
+=======
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "uid-safe": "^2.1.1"
+>>>>>>> origin/sessions
   }
 }
