@@ -52,29 +52,35 @@ Pocket.prototype.finalAuth = function (req, res) {
     console.log('Asking GetPocket for access token ...');
 
     console.log('cfg: ', self.cfg);
-    self.pocketContext.getAccessToken(self.cfg, function access_token_handler(err, resp, body) {
-        if (err) {
-            console.log('Failed to get access token: ' + err);
-            res.send('<p>' + 'Failed to get access token: ' + err + '</p>');
-        } else if (resp.statusCode !== 200) {
-            res.send('<p>Oops, Pocket said ' + resp.headers.status + ', ' + resp.headers['x-error'] + '</p>');
-        } else {
-            var json = JSON.parse(body);
-            self.cfg.access_token = json.access_token;
-            self.cfg.user_name = json.username;
-            req.session.pocketCfg = self.cfg;
-            console.log('Received access token: ' + self.cfg.access_token + ' for user ' + self.cfg.user_name);
-            console.log(req.session.user)
-            // res.send('<p>Pocket says "yes"</p>' +
-            //     '<p>Your <code>GetPocket</code> configuration should look like this ...</p>' +
-            //     '<p><code>var cfg = ' + JSON.stringify(self.cfg, undefined, 2) + ';</code></p>');
-                
-            self.getWeek(res);
-        }
-    });
+    
+    if(req.session.pocketCfg.user_name === req.session.user) {
+        console.log('session: ' + req.session);
+        self.getWeek(req, res);
+    } else {       
+        self.pocketContext.getAccessToken(self.cfg, function access_token_handler(err, resp, body) {
+            if (err) {
+                console.log('Failed to get access token: ' + err);
+                res.send('<p>' + 'Failed to get access token: ' + err + '</p>');
+            } else if (resp.statusCode !== 200) {
+                res.send('<p>Oops, Pocket said ' + resp.headers.status + ', ' + resp.headers['x-error'] + '</p>');
+            } else {
+                var json = JSON.parse(body);
+                self.cfg.access_token = json.access_token;
+                self.cfg.user_name = json.username;
+                req.session.pocketCfg = self.cfg;
+                console.log('Received access token: ' + self.cfg.access_token + ' for user ' + self.cfg.user_name);
+                console.log(req.session.user)
+                // res.send('<p>Pocket says "yes"</p>' +
+                //     '<p>Your <code>GetPocket</code> configuration should look like this ...</p>' +
+                //     '<p><code>var cfg = ' + JSON.stringify(self.cfg, undefined, 2) + ';</code></p>');
+                    
+                self.getWeek(req, res);
+            }
+        });
+    }
 }
 
-Pocket.prototype.getWeek = function (res) {
+Pocket.prototype.getWeek = function (req, res) {
     var self = this;
     var params = {
         "count":"1",
@@ -82,7 +88,11 @@ Pocket.prototype.getWeek = function (res) {
         "detailType":"complete",
         "sort": "newest"
     };
-    self.pocketContext.get(params, function (err, resp) {
+    
+    var pocket = new GetPocket(req.session.pocketCfg);
+    
+    
+    pocket.get(params, function (err, resp) {
         // check err or handle the response
         console.log(err, resp.list)
         
