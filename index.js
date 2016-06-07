@@ -1,36 +1,11 @@
-<<<<<<< HEAD
 "use strict"
 require('dotenv-safe').load()
 
-var express = require('express')
-var app = express()
-var pocket = require('./pocket')
-
-app.get('/', function (req, res) {
-    pocket.init(res)
-    
-})
-
-app.get('pocketAuth', function(req, res) {
-    pocket.init(res)
-})
-
-app.get('/list', function (req, res) {
-    pocket.finalAuth(res);
-    
-})
-
-// create server
-var port = process.env.PORT || 5000;
-
-app.listen(port, function () {
-    console.log("Listening on " + port);
-})
-=======
 var express = require('express');
 var app = express();
 var session = require('express-session')
 var uid = require('uid-safe')
+var pocket = require('./pocket')
 
 app.use(session({
   genid: function(req) {
@@ -41,33 +16,29 @@ app.use(session({
   saveUninitialized: true
 }))
 
-app.get('/awesome', function(req, res) {
-  if(req.session.lastPage) {
-    res.write('Last page was: ' + req.session.lastPage + '. ');
-  }
+app.get('/', function (req, res) {
+    //res.send('<p>cojradssssdsdsdsds</p>');
+    req.session.user = 'conradj'
+    req.session.pocketAuth = null
+    //res.send('<p>dsdsddsdssd:' + req.session.user + '</p>');
+    
+    pocket.init(req, res)    
+})
 
-  req.session.lastPage = '/awesome';
-  res.end('Your Awesome.');
-});
+app.get('pocketAuth', function(req, res) {
+    pocket.init(res)
+})
 
-app.get('/radical', function(req, res) {
-  if(req.session.lastPage) {
-    res.write('Last page was: ' + req.session.lastPage + '. ');
-  }
+app.get('/list', function (req, res) {
+    //res.send('<p>222:' + req.session.user + '</p>');
+    
+    //req.session.lastPage = '/awesome'
+    pocket.finalAuth(req, res)
+})
 
-  req.session.lastPage = '/radical';
-  res.end('What a radical visit!');
-});
+// create server
+var port = process.env.PORT || 5000;
 
-app.get('/tubular', function(req, res) {
-  if(req.session.lastPage) {
-    res.write('Last page was: ' + req.session.lastPage + '. ');
-  }
-
-  req.session.lastPage = '/tubular';
-  res.end('Are you a surfer?');
-});
-
-
-app.listen(process.env.PORT || 5000);
->>>>>>> origin/sessions
+app.listen(port, function () {
+    console.log("Listening on " + port);
+})

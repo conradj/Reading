@@ -19,7 +19,7 @@ var Pocket = function () {
     this.pocketContext = new GetPocket(this.cfg);
 };
 
-Pocket.prototype.init = function (res) {
+Pocket.prototype.init = function (req, res) {
     var self = this;
     console.log(self.cfg);
 
@@ -39,12 +39,13 @@ Pocket.prototype.init = function (res) {
 
             var url = self.pocketContext.getAuthorizeURL(self.cfg);
             console.log('Redirecting to ' + url + ' for authentication');
+            req.session.pocketCfg = self.cfg;
             res.redirect(url);
         }
     });
 }
 
-Pocket.prototype.finalAuth = function (res) {
+Pocket.prototype.finalAuth = function (req, res) {
     var self = this;
 
     console.log('Authentication callback active ...');
@@ -61,8 +62,9 @@ Pocket.prototype.finalAuth = function (res) {
             var json = JSON.parse(body);
             self.cfg.access_token = json.access_token;
             self.cfg.user_name = json.username;
+            req.session.pocketCfg = self.cfg;
             console.log('Received access token: ' + self.cfg.access_token + ' for user ' + self.cfg.user_name);
-
+            console.log(req.session.user)
             // res.send('<p>Pocket says "yes"</p>' +
             //     '<p>Your <code>GetPocket</code> configuration should look like this ...</p>' +
             //     '<p><code>var cfg = ' + JSON.stringify(self.cfg, undefined, 2) + ';</code></p>');
