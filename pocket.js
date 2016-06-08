@@ -83,7 +83,7 @@ Pocket.prototype.finalAuth = function (req, res) {
 Pocket.prototype.getWeek = function (req, res) {
     var self = this;
     var params = {
-        "count":"1",
+        "count":"5",
         "state": "archive",
         "detailType":"complete",
         "sort": "newest"
@@ -94,9 +94,24 @@ Pocket.prototype.getWeek = function (req, res) {
     
     pocket.get(params, function (err, resp) {
         // check err or handle the response
-        console.log(err, resp.list)
-        
-        res.send("<div>" + JSON.stringify(resp, undefined, 2)  +  "</div>")
+        if (err) {
+            console.log('Failed to get articles: ' + err);
+            res.send('<p>' + 'Failed to get articles: ' + err + '</p>');
+        } else if (resp.statusCode !== 200) {
+            res.send('<p>Article Get not succeeded, Pocket said ' + resp.headers.status + ', ' + resp.headers['x-error'] + '</p>');
+        } else {
+            var article, title, url, excerpt
+            var html = ""
+            Object.keys(resp.list).forEach(function(articleIndex) {
+                article = resp.list[articleIndex]
+                title = article.resolved_title
+                url = article.resolved_url
+                excerpt = article.excerpt
+                html += "<h1><a href='" + url + "' target='_blank'>" + title + "</a></h1>" + excerpt + "..." 
+            });
+
+            res.send("<div>" + html  +  "</div>")
+        }
     });
 }
 
