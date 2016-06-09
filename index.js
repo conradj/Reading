@@ -18,11 +18,11 @@ app.use(session({
 
 app.get('/', function (req, res) {
     //res.send('<p>cojradssssdsdsdsds</p>');
-    req.session.user = 'conradj'
-    req.session.pocketAuth = null
+    //req.session.user = 'conradj'
+    //req.session.pocketAuth = null
     //res.send('<p>dsdsddsdssd:' + req.session.user + '</p>');
-    
-    pocket.init(req, res)    
+    res.send("<a href='pocketAuth'>Register / Login</a></br></br><div><a href='conradj'>Conradj</a></div>");
+    //pocket.init(req, res)    
 })
 
 app.get('pocketAuth', function(req, res) {
@@ -34,6 +34,11 @@ app.get('/list', function (req, res) {
     
     //req.session.lastPage = '/awesome'
     pocket.finalAuth(req, res)
+})
+
+app.get('/conradj', function (req, res) {
+    // get articles out of db
+    res.send("<div>Conradj</div>");
 })
 
 // create server

@@ -23,11 +23,12 @@
   },
   "homepage": "https://github.com/conradj/Reading#readme",
   "dependencies": {
+    "dotenv-safe": "^2.3.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
-    "uid-safe": "^2.1.1",
-    "dotenv-safe": "^2.3.1",
-    "node-getpocket": "^1.0.0"
+    "mongodb": "^2.1.18",
+    "node-getpocket": "^1.0.0",
+    "uid-safe": "^2.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.9.2"

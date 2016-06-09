@@ -70,6 +70,9 @@ Pocket.prototype.finalAuth = function (req, res) {
                 req.session.pocketCfg = self.cfg;
                 console.log('Received access token: ' + self.cfg.access_token + ' for user ' + self.cfg.user_name);
                 console.log(req.session.user)
+
+                // TODO: Save token in DB to get data
+
                 // res.send('<p>Pocket says "yes"</p>' +
                 //     '<p>Your <code>GetPocket</code> configuration should look like this ...</p>' +
                 //     '<p><code>var cfg = ' + JSON.stringify(self.cfg, undefined, 2) + ';</code></p>');
