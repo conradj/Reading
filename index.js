@@ -40,11 +40,20 @@ app.get('/list', function (req, res) {
 })
 
 app.get('/conradj', function (req, res) {
+    
     // get articles out of db
     MongoClient.connect(url, function(err, db) {
         findUserArticles(db, 'conradj', function (articles) {
             console.log(articles)
-            res.send("<div>Conradj</div>")
+            var article, title, url, excerpt
+            var html = ""
+            articles.forEach(function(article, index) {
+                title = article.resolved_title
+                url = article.resolved_url
+                excerpt = article.excerpt
+                html += "<h1><a href='" + url + "' target='_blank'>" + title + "</a></h1>" + excerpt + "..." 
+            })
+            res.send(html)
             db.close()
         });
     });
@@ -61,6 +70,8 @@ app.listen(port, function () {
 
 var findUserArticles = function(db, username, callback) {
    var cursor = db.collection(username).find()
+   cursor.toArray(function(error, articles) { 
+    callback(articles)
+   })
    
-   callback(cursor.toArray())
 };

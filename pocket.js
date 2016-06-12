@@ -111,7 +111,7 @@ Pocket.prototype.getWeek = function (req, res) {
                 url = article.resolved_url
                 excerpt = article.excerpt
                 html += "<h1><a href='" + url + "' target='_blank'>" + title + "</a></h1>" + excerpt + "..." 
-            });
+            })
 
             res.send("<div>" + html  +  "</div>")
         }
