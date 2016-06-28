@@ -15,7 +15,7 @@ function newConnection() {
 
 DbUtils.prototype.cleanJSONkeys = function(json) {
     var newKeyName
-    
+
      return JSON.parse(JSON.stringify(json), function(k, v) {
         if(k.indexOf(".") > -1) {
             newKeyName = k.replace(/\./g, "_")
@@ -42,10 +42,6 @@ DbUtils.prototype.find = function(collection, query, select, sort) {
         .toArray()
         .finally(db.close.bind(db))
     })
-    .then(function(result) {
-        console.log("select successful", collection, result)
-        return result
-    })
     .catch(function(err) {
       console.error("select Error", collection, err)
     })
@@ -58,9 +54,6 @@ DbUtils.prototype.insert = function(collection, data) {
         .collection(collection)
         .insert(data)
         .finally(db.close.bind(db))
-    })
-    .then(function() {
-        console.log("insert successful", collection, data)
     })
     .catch(function(err) {
       console.error("insert Error", collection, err)
@@ -75,9 +68,6 @@ DbUtils.prototype.insertMany = function(collection, data) {
         .insertMany(data)
         .finally(db.close.bind(db))
     })
-    .then(function(results) {
-        console.log("insertMany successful", collection, data, results)
-    })
     .catch(function(err) {
       console.error("insert Error", collection, err)
     })
@@ -91,13 +81,9 @@ DbUtils.prototype.update = function(collection, query, data, doUpsert) {
         .update(query, data, { upsert: doUpsert } )
         .finally(db.close.bind(db))
     })
-    .then(function() {
-        console.log("update successful", collection, data)
-    })
     .catch(function(err) {
       console.error("update Error", collection, err)
     })
 }
-
 
 module.exports = new DbUtils();

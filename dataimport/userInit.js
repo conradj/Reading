@@ -4,7 +4,7 @@
 
 var MongoClient = require('mongodb').MongoClient
 var moment = require('moment')
-var PocketUtils = require('./../pocket/utils')
+var PocketUtils = require('./../pocket/pocketUtils')
 /// TODO loop through users?
 
 
