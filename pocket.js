@@ -1,8 +1,8 @@
 /*
 authenticate app
 */
-
-var GetPocket = require('node-getpocket');
+var UserData = require('./data/user-data')
+var GetPocket = require('node-getpocket')
 require('dotenv-safe').load()
 
 var Pocket = function () {
@@ -24,7 +24,7 @@ Pocket.prototype.init = function (req, res) {
     console.log(self.cfg);
 
     console.log('Asking GetPocket for request token ...');
-    console.log('cfg: ', self.cfg);
+    console.log('cfg: ', self.cfg, req.session);
     self.pocketContext.getRequestToken(self.cfg, function (err, resp, body) {
         this.loginAttempted = true;
         if (err) {
@@ -39,6 +39,7 @@ Pocket.prototype.init = function (req, res) {
 
             var url = self.pocketContext.getAuthorizeURL(self.cfg);
             console.log('Redirecting to ' + url + ' for authentication');
+
             req.session.pocketCfg = self.cfg;
             res.redirect(url);
         }
@@ -73,11 +74,12 @@ Pocket.prototype.finalAuth = function (req, res) {
 
                 // TODO: Save token in DB to get data
 
-                // res.send('<p>Pocket says "yes"</p>' +
-                //     '<p>Your <code>GetPocket</code> configuration should look like this ...</p>' +
-                //     '<p><code>var cfg = ' + JSON.stringify(self.cfg, undefined, 2) + ';</code></p>');
-                    
-                self.getWeek(req, res);
+                res.send('<p>Pocket says "yes"</p>' +
+                    '<p>Your <code>GetPocket</code> configuration should look like this ...</p>' +
+                    '<p><code>var cfg = ' + JSON.stringify(self.cfg, undefined, 2) + ';</code></p>')
+ 
+                UserData.insertPocketAuth(self.cfg.user_name, self.cfg.access_token )
+                //self.getWeek(req, res);
             }
         });
     }

@@ -3,7 +3,8 @@
 // TODO: Do check to make sure it isn't on web server
 
 var MongoClient = require('mongodb').MongoClient
-
+var moment = require('moment')
+var PocketUtils = require('./../pocket/utils')
 /// TODO loop through users?
 
 
@@ -15,30 +16,44 @@ var MongoClient = require('mongodb').MongoClient
 var url = 'mongodb://localhost:27017/reader'
 
 
-function initNewUsers() {
-  var user, articles
-  // foreach new user in db
-  user = { name: "conradj" }
-  // get all of their read articles, 5000 at a time
-  articles = getUserArticles(user, 0)
-  console.log(articles.length)
-  insertAllArticlesForUser(user, articles)
+function initNewUser(username) {
+  var cumulativeArticles = getReadUserArticlesSinceLastImport(username)
+  var articlesByWeek = splitByWeek(cumulativeArticles)
+  //insertAllArticlesForUser(username, cumalativeArticles)
 }
 
-function getUserArticles(user, offset) {
+function getReadUserArticlesSinceLastImport(username) {
+  var articles, 
+    cumulativeArticles = [], 
+    resultCount,
+    fetchMoreArticles = true, 
+    since
+  var loop = 0
+  // get all of their read articles, in batches
+  while(fetchMoreArticles) {
+    // get all articles read since the last import
+    cumulativeArticles = cumulativeArticles.concat(getUserArticles(username, since, cumulativeArticles.length))
+    loop ++
+    /* Because pocket might not return all articles for a query (current max seems to be 5000)
+       Keep attempting to get more articles until there are non left */
+    fetchMoreArticles = loop < 2 //articles.length > 0
+  }
+
+  return cumulativeArticles
+}
+
+function getUserArticles(username, since, offset) {
   // connect to pocket under their credentials
   var articles
   var queryResults = require("./conradj.json");
+  return PocketUtils.convertResultsToArticlesArray(queryResults)
+}
 
-  var articles = Object.keys(queryResults.list).map(function (value, articleIndex) {
-    return queryResults.list[value]
-  })
+    
 
-  if (articles.length >= 5000) {
-    // max number so there are likely to be more results to get
-    articles += getUserArticles(user, offset + 5000)
-  }
-  return articles
+function getStartOfWeekForDate(articleDateTime) {
+  var date = moment.unix(articleDateTime)
+  return moment.unix(articleDateTime).weekday(0).hours(0).minutes(0).seconds(0).unix()
 }
 
 function insertAllArticlesForUser(user, articles) {
@@ -61,5 +76,5 @@ function insertAllArticlesForUser(user, articles) {
     
   })
 }
-
-initNewUsers()
+PocketUtils.fred()
+//initNewUser('conradj')
