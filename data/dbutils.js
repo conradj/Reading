@@ -32,18 +32,34 @@ DbUtils.prototype.find = function(collection, query, select, sort) {
   query = query || {}
   select = select || {}
   sort = sort || {}
-
   return newConnection()
     .then(function(db) {
       return db
         .collection(collection)
-        .find(query, select)
+        .findOne(query, select)
         .sort(sort)
         .toArray()
         .finally(db.close.bind(db))
     })
     .catch(function(err) {
       console.error("select Error", collection, err)
+    })
+};
+
+DbUtils.prototype.findOne = function(collection, query, select, sort) {
+  // manage null parameters
+  query = query || {}
+  select = select || {}
+  sort = sort || {}
+  return newConnection()
+    .then(function(db) {
+      return db
+        .collection(collection)
+        .findOne(query, select)
+        .finally(db.close.bind(db))
+    })
+    .catch(function(err) {
+      console.error("selectOne Error", collection, err)
     })
 };
 

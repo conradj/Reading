@@ -83,23 +83,66 @@ function getStartOfWeekForUnixDate(unixDate) {
 }
 
 function saveWeeksToDb(username, articlesByWeek) {
+
+    console.log(articlesByWeek)
+
+    return dbUtils.update(username,
+        { "weeks": { $exists: true }},
+        { $push: { "weeks": { $each: articlesByWeek }}},
+            true
+        )
+    
+
+
+
+
+
     // upsert the last week in the array, as it will be the week that was last imported so will be partial
-    var upsertWeek = articlesByWeek[articlesByWeek.length - 1]
-    var insertWeeks
-    return dbUtils.update(username, 
-        { "weeks.start_date": upsertWeek.start_date }, 
-        {$set: { 
-            "weeks.start_date": upsertWeek.start_date, 
-            "weeks.articles": upsertWeek.articles }
-        }, 
-        true
-    ).then(function() {
-        if(articlesByWeek.length > 1) {
-            // insert all other weeks
-            insertWeeks = articlesByWeek.slice(0, articlesByWeek.length - 2)
-            dbUtils.insertMany(username, insertWeeks)
-        }
-    })
+    // var upsertWeek = articlesByWeek[articlesByWeek.length - 1]
+    // var insertWeeks
+    // return dbUtils.update(username, 
+    //     { "weeks.start_date": upsertWeek.start_date }, 
+    //     { $push: { "weeks": upsertWeek }},
+    //     true
+    // )
+    // .then(function(writeResult) {
+    //     if (writeResult.result.hasOwnProperty('upserted')) {
+    //         console.log("1st ", JSON.stringify(writeResult.result.upserted, undefined, 2));
+    //     }
+
+    //     console.log("1st matched: %d, modified: %d",
+    //         writeResult.result.n,
+    //         writeResult.result.nModified
+    //     );
+    // })
+    // .then(function() {
+    //     if(articlesByWeek.length > 1) {
+    //         // insert all other weeks
+    //         insertWeeks = articlesByWeek.slice(0, articlesByWeek.length - 2)
+    //         console.log("adding article weeks", insertWeeks.length)
+    //         dbUtils.insertMany(username, insertWeeks)
+    //         return dbUtils.update(username,
+    //         { "weeks": { $exists: true }},
+    //         { $push: { "weeks": { $each: insertWeeks }}},
+    //         true
+    //         )
+
+    //         // return dbUtils.update(username,
+    //         // { "weeks": { $exists: true }},
+    //         // { $push: { "weeks": { $each: insertWeeks }}},
+    //         // true
+    //         // )
+    //     }
+    // }).then(function(writeResult) {
+    //     if (writeResult.result.hasOwnProperty('upserted')) {
+    //         console.log("others ", JSON.stringify(writeResult.result.upserted, undefined, 2));
+    //     }
+
+    //     console.log("others matched: %d, modified: %d",
+    //         writeResult.result.n,
+    //         writeResult.result.nModified
+    //     );
+    // })
     .catch(function(error) {
         console.warn("saveWeeksToDb db error:" + error)
         throw error
@@ -144,10 +187,17 @@ module.exports = {
         if(sinceUnixDate) {
             queryParams.since = sinceUnixDate
         }
-
+        console.log("doing a query innit", queryParams)
         pocketApi.refreshConfig(pocketConfig)
-
+        // get all the articles
         var queryResults = require("./../dataimport/conradj.json");
+        // get the query datestamp and save it
+
+        var saveSinceDate = dbUtils.update(pocketConfig.username, 
+            { "pocket_last_query_unix": { $exists: true }}, 
+            { "pocket_last_query_unix": queryResults.since }, 
+            true)
+
         var articlesByWeek = splitByWeek(queryResults)
         
         return saveWeeksToDb(pocketConfig.username, articlesByWeek)

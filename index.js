@@ -6,6 +6,7 @@ var uid = require("uid-safe")
 var pocketUtils = require("./pocket/pocketUtils")
 var userData = require("./data/user-data")
 var Promise = require("bluebird")
+var moment = require("moment")
 
 app.use(session({
   genid: function(req) {
@@ -61,13 +62,14 @@ app.get('/users/:username/loadarticles', function (req, res) {
         var pocketConfig = pocketUtils.getNewConfig()
         pocketConfig.access_token = results.pocket_access_token
         pocketConfig.username = username
-        return pocketUtils.getReadArticlesSince(pocketConfig, results.pocket_last_import_unix)
+        return pocketUtils.getReadArticlesSince(pocketConfig, results.pocket_last_query_unix)
     })
     .catch(function(error) {
         console.warn("loadarticles error", error)    
     })
     .finally(function() {
-        res.send("ooooh, hello you first loader" + req.session.pocketCfg)
+        //res.send("ooooh, hello you first loader" + req.session.pocketCfg)
+        res.redirect("/users/" + username)
     })
 })
 
@@ -86,9 +88,45 @@ function userHasAccess(req) {
 }
 
 app.get('/users/:username', function (req, res) {
-    res.send("ooooh, hello you " + req.params.username)
+    //res.send("ooooh, hello you " + req.params.username)
+
+    var html = ""
     // get all de posts! (or just the current weeks?)
+    userData.getArticles(req.params.username)
+    .then(function(weeks) {
+        console.log(weeks)
+
+        weeks.weeks.forEach(function(week, index) {
+            html += renderWeek(week)
+        })
+
+        res.send(html)
+    })
 })
+
+function renderWeek(week) {
+    var html = ""
+    html += moment.unix(week.start_date).format("dddd, MMMM Do YYYY") + "<br /><ul>"
+    week.articles.forEach(function(article) {
+        html += "<li>" + renderArticle(article) + "</li>"
+    })
+
+    html += "</ul><hr /><br />"
+
+    return html
+}
+
+function renderArticle(article) {
+    var html = ""
+    html = "<a href='" + article.resolved_url + "'>" + article.resolved_title + "</a>"
+    if(article.favorite === "1") {
+        if(article.has_image === "1") {
+            html += "<br /><img src='" + article.image.src + "' />"
+        }
+        html += "</br>" + article.excerpt
+    }
+    return html
+}
 
 // create server
 var port = process.env.PORT || 5000;
