@@ -2,7 +2,10 @@
   "name": "reading",
   "version": "1.0.0",
   "description": "Daily and Weekly articles roundup from your read articles in getpocket",
-  "main": "index.js",
+  "main": "server.js",
+  "engines": {
+    "node": "4.2.1"
+  },
   "scripts": {
     "open:dev": "nodemon . localhost 5000",
     "start": "npm run open:dev"
