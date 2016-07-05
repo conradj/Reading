@@ -38,6 +38,7 @@ app.get('/login', function(req, res) {
 })
 
 app.get('/users/pocketauth', function (req, res) {
+    console.log(req.session.pocketCfg)
     var newPocketConfig = pocketUtils.getAccessToken(req.session.pocketCfg)
     var initialiseUser = newPocketConfig.then(function(pocketConfig) { 
         return userData.initialise(pocketConfig.username, pocketConfig.access_token)
