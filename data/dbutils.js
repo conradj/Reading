@@ -36,7 +36,7 @@ DbUtils.prototype.find = function(collection, query, select, sort) {
     .then(function(db) {
       return db
         .collection(collection)
-        .findOne(query, select)
+        .find(query, select)
         .sort(sort)
         .toArray()
         .finally(db.close.bind(db))
