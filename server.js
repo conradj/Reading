@@ -23,7 +23,6 @@ app.get('/', function (req, res) {
 
 app.get('/login', function(req, res) {
     var pocketConfig = pocketUtils.getNewConfig()
-    console.log(pocketConfig)
     pocketUtils.setRequestTokenCfg(pocketConfig)
     .then(function(updatedPocketConfig) {
         req.session.pocketCfg = updatedPocketConfig
@@ -38,13 +37,22 @@ app.get('/login', function(req, res) {
 })
 
 app.get('/users/pocketauth', function (req, res) {
-    console.log(req.session.pocketCfg)
-    var newPocketConfig = pocketUtils.getAccessToken(req.session.pocketCfg)
-    var initialiseUser = newPocketConfig.then(function(pocketConfig) { 
+    var getAccessToken = pocketUtils.getAccessToken(req.session.pocketCfg)
+    var initialiseUser = getAccessToken.then(function(pocketConfig) { 
         return userData.initialise(pocketConfig.username, pocketConfig.access_token)
     })
 
-    return Promise.join(newPocketConfig, initialiseUser, function(pocketConfig, initialiseUserResult) {
+    return Promise.join(getAccessToken, initialiseUser, function(pocketConfig, initialiseUserResult) {
+            
+        if (initialiseUserResult.result.hasOwnProperty('upserted')) {
+            console.log("1st ", JSON.stringify(initialiseUserResult.result.upserted, undefined, 2));
+        }
+
+        console.log("1st matched: %d, modified: %d",
+            initialiseUserResult.result.n,
+            initialiseUserResult.result.nModified
+        )
+        console.log(pocketConfig)
         req.session.pocketCfg = pocketConfig
         res.redirect("/users/" + pocketConfig.username + "/loadarticles")
         return
