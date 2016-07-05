@@ -41,8 +41,9 @@ DbUtils.prototype.find = function(collection, query, select, sort) {
         .toArray()
         .finally(db.close.bind(db))
     })
-    .catch(function(err) {
-      console.error("select Error", collection, err)
+    .catch(function(error) {
+      console.error("select Error", collection, error)
+      throw error
     })
 };
 
@@ -58,8 +59,9 @@ DbUtils.prototype.findOne = function(collection, query, select, sort) {
         .findOne(query, select)
         .finally(db.close.bind(db))
     })
-    .catch(function(err) {
-      console.error("selectOne Error", collection, err)
+    .catch(function(error) {
+      console.error("selectOne Error", collection, error)
+      throw error
     })
 };
 
@@ -71,8 +73,9 @@ DbUtils.prototype.insert = function(collection, data) {
         .insert(data)
         .finally(db.close.bind(db))
     })
-    .catch(function(err) {
-      console.error("insert Error", collection, err)
+    .catch(function(error) {
+      console.error("insert Error", collection, error)
+      throw error
     })
 }
 
@@ -84,8 +87,9 @@ DbUtils.prototype.insertMany = function(collection, data) {
         .insertMany(data)
         .finally(db.close.bind(db))
     })
-    .catch(function(err) {
-      console.error("insert Error", collection, err)
+    .catch(function(error) {
+      console.error("insert Error", collection, error)
+      throw error
     })
 }
 
@@ -97,8 +101,9 @@ DbUtils.prototype.update = function(collection, query, data, doUpsert) {
         .update(query, data, { upsert: doUpsert } )
         .finally(db.close.bind(db))
     })
-    .catch(function(err) {
-      console.error("update Error", collection, err)
+    .catch(function(error) {
+      console.error("update Error", collection, error)
+      throw error
     })
 }
 
