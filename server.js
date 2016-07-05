@@ -23,7 +23,7 @@ app.get('/', function (req, res) {
 
 app.get('/login', function(req, res) {
     var pocketConfig = pocketUtils.getNewConfig()
-
+    console.log(pocketConfig)
     pocketUtils.setRequestTokenCfg(pocketConfig)
     .then(function(updatedPocketConfig) {
         req.session.pocketCfg = updatedPocketConfig
