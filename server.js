@@ -98,24 +98,40 @@ function userHasAccess(req) {
 
 app.get('/users/:username', function (req, res) {
     //res.send("ooooh, hello you " + req.params.username)
+    // get current week start date
+    var startOfWeekUnix = moment().startOf('week').unix()
+    res.redirect('/users/' + req.params.username + '/' + startOfWeekUnix)
+})
 
+app.get('/users/:username/:startOfWeekUnix', function (req, res) {
     var html = ""
+    var startOfWeekUnix = parseInt(req.params.startOfWeekUnix)
     // get all de posts! (or just the current weeks?)
-    userData.getArticles(req.params.username)
-    .then(function(weeks) {
-        console.log(weeks)
-
-        weeks.weeks.forEach(function(week, index) {
-            html += renderWeek(week)
-        })
-
-        res.send(html)
+    userData.getWeek(req.params.username, startOfWeekUnix)
+    .then(function(week) {
+        week.start_date = startOfWeekUnix // do this in case nothing gets sent back
+        res.send(req.params.username + ' ' + req.params.startOfWeekUnix + renderWeek(week))
     })
+
+
+
+    
 })
 
 function renderWeek(week) {
     var html = ""
+
+    if(!week) {
+        // this should never happen
+        return "<h1>no week!</h1>"
+    }
+
     html += moment.unix(week.start_date).format("dddd, MMMM Do YYYY") + "<br /><ul>"
+
+    if(!week.articles || week.articles.length == 0) {
+        return html + "<h1>no articles this week!</h1>"
+    }
+
     week.articles.forEach(function(article) {
         html += "<li>" + renderArticle(article) + "</li>"
     })

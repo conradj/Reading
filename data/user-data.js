@@ -43,8 +43,16 @@ UserData.prototype.getArticles = function (username) {
   return dbUtils.findOne(username, { "weeks": { $exists: true } }, { "weeks": 1 })
 }
 
-UserData.prototype.getArticlesForWeek = function (username, unixStartDate) {
-  return dbUtils.findOne(username, { "weeks.start_date": unixStartDate }, { "weeks.articles": 1 })
+UserData.prototype.getWeek = function (username, unixStartDate) {
+  var week = {}
+  return dbUtils.find(username, { "weeks.start_date": unixStartDate }, {"weeks": {$elemMatch: {start_date: unixStartDate}}})
+    .then(function(resultArray) {
+      if(resultArray.length > 0 && resultArray[0].weeks.length) {
+        return resultArray[0].weeks[0]
+      }
+
+      return week
+    })
 }
 
 module.exports = new UserData();
