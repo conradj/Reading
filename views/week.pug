@@ -5,10 +5,10 @@ block title
 
 block content
     div(class="row")
+        heading
+            h3= 'Week starting: ' + moment.unix(week.start_date).format('dddd, MMMM Do YYYY')
+    div(class="row")
         a.u-pull-left(href=prev_week) Previous week
         a.u-pull-right(href=next_week) Next week
-    div(class="row")
-        heading
-            h2= 'Week starting: ' + moment.unix(week.start_date).format('dddd, MMMM Do YYYY')
         if(week.articles && week.articles.length > 0)
             include ./includes/articles.pug
