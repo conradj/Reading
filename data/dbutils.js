@@ -27,16 +27,17 @@ DbUtils.prototype.cleanJSONkeys = function(json) {
     })
 }
 
-DbUtils.prototype.find = function(collection, query, select, sort) {
+DbUtils.prototype.find = function(collection, query, projection, sort) {
   // manage null parameters
   query = query || {}
-  select = select || {}
+  projection = projection || {}
   sort = sort || {}
+  
   return newConnection()
     .then(function(db) {
       return db
         .collection(collection)
-        .find(query, select)
+        .find(query, projection)
         .sort(sort)
         .toArray()
         .finally(db.close.bind(db))
@@ -47,16 +48,16 @@ DbUtils.prototype.find = function(collection, query, select, sort) {
     })
 };
 
-DbUtils.prototype.findOne = function(collection, query, select, sort) {
+DbUtils.prototype.findOne = function(collection, query, projection, sort) {
   // manage null parameters
   query = query || {}
-  select = select || {}
+  projection = projection || {}
   sort = sort || {}
   return newConnection()
     .then(function(db) {
       return db
         .collection(collection)
-        .findOne(query, select)
+        .findOne(query, projection)
         .finally(db.close.bind(db))
     })
     .catch(function(error) {
