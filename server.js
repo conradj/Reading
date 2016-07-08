@@ -8,7 +8,8 @@ var userData = require("./data/user-data")
 var Promise = require("bluebird")
 var moment = require("moment")
 
-app.use(session({
+app.locals.moment = require('moment')
+app.use(express.static('public'), session({
   genid: function(req) {
     return uid.sync(18)
   },
@@ -16,10 +17,17 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+//app.use(express.static('public'))
+
+app.set('view engine', 'pug')
 
 app.get('/', function (req, res) {
     res.send("<a href='login'>Register / Login</a></br></br><div><a href='conradj'>Conradj</a></div>");    
 })
+
+app.get('/i', function (req, res) {
+  res.render('index', { title: 'Hey', message: 'Hello there!'})
+});
 
 app.get('/login', function(req, res) {
     var pocketConfig = pocketUtils.getNewConfig()
@@ -110,7 +118,13 @@ app.get('/users/:username/:startOfWeekUnix', function (req, res) {
     userData.getWeek(req.params.username, startOfWeekUnix)
     .then(function(week) {
         week.start_date = startOfWeekUnix // do this in case nothing gets sent back
-        res.send(req.params.username + ' ' + req.params.startOfWeekUnix + renderWeek(week))
+        console.log(week.start_date)
+        res.render('week', { 
+            title: moment.unix(week.start_date).format("dddd, MMMM Do YYYY"), 
+            message: 'Hello there!',
+            week: week
+        });
+        //res.send(req.params.username + ' ' + req.params.startOfWeekUnix + renderWeek(week))
     })
 
 
