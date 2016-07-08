@@ -118,18 +118,16 @@ app.get('/users/:username/:startOfWeekUnix', function (req, res) {
     userData.getWeek(req.params.username, startOfWeekUnix)
     .then(function(week) {
         week.start_date = startOfWeekUnix // do this in case nothing gets sent back
+        
         console.log(week.start_date)
         res.render('week', { 
             title: moment.unix(week.start_date).format("dddd, MMMM Do YYYY"), 
             message: 'Hello there!',
-            week: week
+            week: week,
+            prev_week: startOfWeekUnix - 604800,
+            next_week: startOfWeekUnix + 604800
         });
-        //res.send(req.params.username + ' ' + req.params.startOfWeekUnix + renderWeek(week))
-    })
-
-
-
-    
+    })    
 })
 
 function renderWeek(week) {
