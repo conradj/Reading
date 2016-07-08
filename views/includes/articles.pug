@@ -1,9 +1,11 @@
 each article in week.articles
-    article
-          h3=article.resolved_title
-          i 
+    article(class=article.favorite === 0 ? "" : "favourite")
+        h3=article.resolved_title
+        i 
             p #{article.word_count} words
-          //img(src=article.images['1'].src, alt='')
-          blockquote
-            =article.excerpt
-            a(href=article.resolved_url) ...read
+        if article.favorite === 1 && article.has_image && article.images
+            img(src=article.images['1'].src, alt='')
+        if article.favorite === 1
+            blockquote
+                =article.excerpt
+                a(href=article.resolved_url) ...read

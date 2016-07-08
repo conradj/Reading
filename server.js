@@ -8,6 +8,7 @@ var userData = require("./data/user-data")
 var Promise = require("bluebird")
 var moment = require("moment")
 
+app.locals.moment = require('moment')
 app.use(express.static('public'), session({
   genid: function(req) {
     return uid.sync(18)

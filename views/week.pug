@@ -5,5 +5,5 @@ block title
 
 block content
     heading
-        h2 Week starting #{week.start_date}
+        h2= 'Week starting: ' + moment.unix(week.start_date).format('dddd, MMMM Do YYYY')
     include ./includes/articles.pug
