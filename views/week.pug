@@ -1,0 +1,9 @@
+extends ./layout.pug
+
+block title
+  title= title
+
+block content
+    heading
+        h2 Week starting #{week.start_date}
+    include ./includes/articles.pug

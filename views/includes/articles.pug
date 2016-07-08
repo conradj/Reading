@@ -1,0 +1,9 @@
+each article in week.articles
+    article
+          h3=article.resolved_title
+          i 
+            p #{article.word_count} words
+          //img(src=article.images['1'].src, alt='')
+          blockquote
+            =article.excerpt
+            a(href=article.resolved_url) ...read
